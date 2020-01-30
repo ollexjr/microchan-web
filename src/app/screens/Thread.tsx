@@ -2,22 +2,47 @@ import React from "react"
 import { request } from "../api";
 
 import moment from "moment"
+import { RouteComponentProps } from "react-router-dom";
 
-const ThreadPost: React.FC<{ content: string, user: any, dateCreated: number }> 
-    = ({ content, dateCreated }) => {
+function displayName(name: string) {
+    return name == "" ? "Anonymous" : name;
+}
+
+const User: React.FC<{
+    dateCreated: number,
+    username: string,
+    userperms: number
+}> = ({ dateCreated, username, userperms }) => {
     return (
-        <div className="py-2">
-            <div className="px-4 py-2 box d-inline-block" style={{ borderLeft: '0px' }}>
-                <div className="">
-                    <span>{moment.unix(dateCreated).fromNow()}</span>
-                </div>
-                <div>
-                    {content}
-                </div>
-            </div>
+        <div>
+            <span style={{ marginRight: 10, color: 'green' }}>@{displayName(username)}</span>
+            <small style={{ color: 'purple' }}>[{moment.unix(dateCreated).fromNow()}]</small>
         </div>
     )
 }
+
+export const ThreadPost: React.FC<{
+    style?: object,
+    content: string,
+    dateCreated: number,
+    username: string,
+    userperms: number
+}>
+    = ({ style, content, dateCreated, username, userperms }) => {
+        return (
+            <div className="py-2">
+                <div className="px-4 py-2 box d-inline-block"
+                    style={style}>
+                    <User dateCreated={dateCreated}
+                        username={username}
+                        userperms={userperms} />
+                    <p>
+                        {content}
+                    </p>
+                </div>
+            </div>
+        )
+    }
 
 class PostWriter extends React.Component<{ threadID: string, onSubmit: () => void }> {
     state = {
@@ -51,7 +76,7 @@ class PostWriter extends React.Component<{ threadID: string, onSubmit: () => voi
         return (
             <nav className="container box navbar navbar-dark bg-dark _fixed-bottom">
                 <form className="form-inline" onSubmit={this.handleSubmit}>
-                    <textarea className="form-control mr-sm-2" 
+                    <textarea className="form-control mr-sm-2"
                         value={text}
                         placeholder="Search" aria-label="Search"
                         onChange={(event) => this.setState({ text: event.target.value })} />
@@ -62,7 +87,7 @@ class PostWriter extends React.Component<{ threadID: string, onSubmit: () => voi
     }
 }
 
-export default class ThreadView extends React.Component<{ threadID: string }> {
+export default class ThreadView extends React.Component<RouteComponentProps<{}> & { threadID: string }> {
     state = {
         page: Array<any>(),
         status: 0
@@ -81,13 +106,26 @@ export default class ThreadView extends React.Component<{ threadID: string }> {
     }
     render(): React.ReactNode {
         const { page } = this.state;
+
+        // cast to {any} as I really can't be bothered 
+        // to write the interface for this currently.
+        const state: any = this.props.location.state;
         return (
             <>
-                <div className="box flex-grow-1 overflow-auto">
-                    {page.map((e) => <ThreadPost 
-                        user={e.User}
-                        dateCreated={e.DateCreated} 
-                        content={e.Content} />)}
+                <div className="flex-grow-1 overflow-auto">
+                    <ThreadPost
+                        username={state.username}
+                        content={state.content}
+                        dateCreated={state.dateCreated}
+                        userperms={state.userperms}
+                    />
+                    <div style={{ marginLeft: '1em', paddingLeft: "1em", borderLeft: "2px dashed red" }}>
+                        {page.map((e) => <ThreadPost
+                            userperms={0}
+                            username={e.User.Name}
+                            dateCreated={e.DateCreated}
+                            content={e.Content} />)}
+                    </div>
                 </div>
                 <PostWriter onSubmit={this.get} threadID={this.props.threadID} />
             </>

@@ -42,3 +42,12 @@ html, body, .container {
 .post { 
   padding: 2em;
 }
+
+.box-y {
+  border-left: 2px solid white;
+  border-right: 2px solid white;
+}
+
+.navbar {
+  border-bottom: 2px solid white;
+}

@@ -3,20 +3,63 @@ import { Switch, Route, RouteComponentProps, RouteChildrenProps, match, Link, wi
 import { request } from "../api"
 
 import ThreadCreate from "./ThreadCreate"
+import { ThreadPost } from "./Thread"
 import { withModal } from "../components/modal"
 import ThreadView from "./Thread"
+import moment from "moment"
 
-const ThreadLink: React.FC<{ url: string, threadID: string, title: string }> = (({ url, threadID, title }) => {
-    return (
-        <Link to={`${url}/t/${threadID}`}>
-            <div className="p-2">
-                <div className="px-4 py-2 box d-inline-block">
-                    <p><strong>/t/{title}</strong></p>
+
+const ThreadLink: React.FC<{
+    url: string,
+    threadID: string,
+
+    username: string,
+    userperms: number,
+    dateCreated: number,
+    content: string,
+    count: number,
+    posts: Array<any>
+}>
+    = (({ url, threadID,
+        posts, dateCreated, userperms, username, content, count }) => {
+        const viewMore = (posts && posts.length) > 0 ? count -  posts.length : 0  
+        return (
+            <Link to={{ 
+                    pathname: `${url}/t/${threadID}`, 
+                    state: {
+                        posts, 
+                        dateCreated, 
+                        userperms, 
+                        username, 
+                        content, 
+                        count
+                    }
+                }}>
+                <div className="pb-1">
+                    <div className="px-2 py-0">
+                        <ThreadPost
+                            style={{ borderLeftColor: 'red' }}
+                            content={content}
+                            username={username}
+                            userperms={userperms}
+                            dateCreated={dateCreated}
+                        />
+                        <div style={{ marginLeft: '1em', paddingLeft: "1em", borderLeft: "2px dashed red" }}>
+                            {posts.map((e: any) =>
+                                <ThreadPost
+                                    userperms={0}
+                                    username={e.User.Name}
+                                    dateCreated={e.DateCreated}
+                                    content={e.Content} />)}
+                        </div>
+                        <div className="px-4">
+                            <p>View {viewMore} more replies</p>
+                        </div>
+                    </div>
                 </div>
-            </div>
-        </Link>
-    )
-})
+            </Link>
+        )
+    })
 
 class BoardView extends React.Component<RouteComponentProps<{}> & { boardID: string }> {
     componentDidMount() {
@@ -37,12 +80,17 @@ class BoardView extends React.Component<RouteComponentProps<{}> & { boardID: str
         const { page } = this.state;
         const { match } = this.props;
         return (
-            <div className="board box">
+            <div className="board _box">
                 <div>
                     {page.map((e) => <ThreadLink
                         url={match.url}
-                        title={e.Title}
-                        threadID={e.UUID} />)}
+                        threadID={e.UUID}
+                        dateCreated={e.DateCreated}
+                        userperms={0}
+                        username={e.User.Name}
+                        content={e.Content}
+                        count={e.Count}
+                        posts={e.Posts || []} />)}
                 </div>
             </div>
         )
@@ -51,7 +99,7 @@ class BoardView extends React.Component<RouteComponentProps<{}> & { boardID: str
 
 const BoardHeader: React.FC<{ boardID: string, url: string }> = ({ boardID, url }) => {
     return (
-        <nav className="navbar box">
+        <nav className="navbar _box">
             <a className="" href="#">/b/{boardID}</a>
             <Link to={`${url}/create`}>
                 <button className="btn btn-dark">Create thread</button>
@@ -69,8 +117,8 @@ export class BoardRouter extends React.Component<RouteComponentProps<{ boardID: 
                 <BoardHeader boardID={params.boardID} url={url} />
                 <Switch>
                     <Route path={`${url}/t/:threadID`}
-                        component={({ match }: RouteComponentProps<{ threadID: string }>) =>
-                            <ThreadView threadID={match.params.threadID} />} />
+                        component={({ location, match, history }: RouteComponentProps<{ threadID: string }>) =>
+                            <ThreadView location={location} history={history} match={match} threadID={match.params.threadID} />} />
                     <Route path={`${url}`}
                         component={(props: RouteComponentProps<any>) =>
                             <BoardView {...props} boardID={params.boardID} />} />

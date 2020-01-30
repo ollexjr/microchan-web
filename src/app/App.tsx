@@ -47,8 +47,8 @@ class NavBoards extends React.Component {
 
 const Nav = () => {
   return (
-    <div className="box">
-      <nav className="navbar navbar-dark bg-dark">
+    <div className="">
+      <nav className="navbar navbar-dark" style={{ borderBottomStyle: "dashed" }}>
         <Link to="/">/micro/chan <small>made in go!</small></Link>
         <Link to="/create">
           <button className="btn btn-dark">Create board</button>
@@ -61,7 +61,7 @@ const Nav = () => {
 
 const AppRouter: React.FC = () => {
   return (
-    <div className="d-flex flex-grow-1 h-100 flex-column container">
+    <div className="d-flex flex-grow-1 _h-100 flex-column container box">
       <Router>
         <Nav />
         <Switch>
@@ -71,6 +71,11 @@ const AppRouter: React.FC = () => {
         </Switch>
         <Route path="/create" component={
           withModal((props) => <BoardCreate {...props} />)} />
+        <nav className="navbar">
+          <Link to="/about">
+            About
+          </Link>
+        </nav>
       </Router>
     </div>
 
