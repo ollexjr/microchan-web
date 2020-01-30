@@ -2,7 +2,7 @@ import React from "react"
 import { request } from "../api";
 
 import moment from "moment"
-import { RouteComponentProps } from "react-router-dom";
+import { RouteComponentProps, Route } from "react-router-dom";
 
 function displayName(name: string) {
     return name == "" ? "Anonymous" : name;
@@ -74,13 +74,13 @@ class PostWriter extends React.Component<{ threadID: string, onSubmit: () => voi
     render() {
         const { text } = this.state;
         return (
-            <nav className="container box navbar navbar-dark bg-dark _fixed-bottom">
-                <form className="form-inline" onSubmit={this.handleSubmit}>
-                    <textarea className="form-control mr-sm-2"
+            <nav className="container box navbar _fixed-bottom">
+                <form id="input" className="form-inline flex-grow-1" onSubmit={this.handleSubmit}>
+                    <textarea className="form-control flex-grow-1 mr-sm-2"
                         value={text}
-                        placeholder="Search" aria-label="Search"
+                        placeholder="Comment..." aria-label="Comment"
                         onChange={(event) => this.setState({ text: event.target.value })} />
-                    <button className="btn btn-outline-success my-2 my-sm-0" type="submit">Search</button>
+                    <button className="btn btn-outline-success my-2 my-sm-0" type="submit">Post</button>
                 </form>
             </nav>
         )
@@ -109,10 +109,24 @@ export default class ThreadView extends React.Component<RouteComponentProps<{}> 
 
         // cast to {any} as I really can't be bothered 
         // to write the interface for this currently.
+        const dim = 64
         const state: any = this.props.location.state;
         return (
             <>
+                <Route path="/post"/>
                 <div className="flex-grow-1 overflow-auto">
+                    <nav className="navbar" style={{ borderBottom: "2px solid white" }}>
+                        <span>Created: {state.dateCreated} {state.count} posts</span>
+                    </nav>
+                    <div className="d-flex flex-column justify-content-center align-items-center" style={{
+                        borderRadius: dim / 2, width: dim, height: dim,
+                        position: 'fixed', right: '5%', bottom: '5%',
+                        backgroundColor: "white",
+                        border: "1px solid white",
+                        cursor: "pointer"
+                    }}>
+                        <span style={{ color: "black" }}>+</span>
+                    </div>
                     <ThreadPost
                         username={state.username}
                         content={state.content}

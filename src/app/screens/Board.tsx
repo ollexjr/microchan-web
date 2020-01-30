@@ -99,7 +99,7 @@ class BoardView extends React.Component<RouteComponentProps<{}> & { boardID: str
 
 const BoardHeader: React.FC<{ boardID: string, url: string }> = ({ boardID, url }) => {
     return (
-        <nav className="navbar _box">
+        <nav className="navbar" style={{ borderBottom: "2px solid white"}}>
             <a className="" href="#">/b/{boardID}</a>
             <Link to={`${url}/create`}>
                 <button className="btn btn-dark">Create thread</button>

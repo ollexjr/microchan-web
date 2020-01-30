@@ -35,7 +35,7 @@ class NavBoards extends React.Component {
   render() {
     const { page } = this.state;
     return (
-      <div className="p-3">
+      <div className="p-3" style={{ borderBottom: "2px dashed white" }}>
         {page.map((e) =>
           <Link to={`/b/${e.Name}`}>
             <span>{e.Name} | </span>
@@ -45,10 +45,18 @@ class NavBoards extends React.Component {
   }
 }
 
+const About = () => {
+  return (
+    <div>
+      <p>microchan!</p>
+    </div>
+  )
+}
+
 const Nav = () => {
   return (
     <div className="">
-      <nav className="navbar navbar-dark" style={{ borderBottomStyle: "dashed" }}>
+      <nav className="navbar navbar-dark" style={{ borderBottom: "2px dashed white" }}>
         <Link to="/">/micro/chan <small>made in go!</small></Link>
         <Link to="/create">
           <button className="btn btn-dark">Create board</button>
@@ -71,10 +79,13 @@ const AppRouter: React.FC = () => {
         </Switch>
         <Route path="/create" component={
           withModal((props) => <BoardCreate {...props} />)} />
-        <nav className="navbar">
+        <Route path="/about" component={
+          withModal(() => <About />)} />
+        <nav className="p-2 navbar" style={{ borderTop: "2px solid white" }}>
           <Link to="/about">
             About
           </Link>
+          <span>2020</span>
         </nav>
       </Router>
     </div>

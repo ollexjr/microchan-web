@@ -27,8 +27,10 @@ export default class HomeView extends React.Component<{ boardID: string }> {
     render(): React.ReactNode {
         const { page } = this.state;
         return (
-            <div className="h-100 box p-2">
-                <p>Boards</p>
+            <div className="h-100 p-2">
+                <p style={{ borderBottom: "2px solid white" }}>
+                    Boards
+                </p>
                 <div>
                     {page.map((e) => <Item name={e.Name} />)}
                 </div>
