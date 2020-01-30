@@ -16,6 +16,8 @@ const User: React.FC<{
     return (
         <div>
             <span style={{ marginRight: 10, color: 'green' }}>@{displayName(username)}</span>
+            
+            {((userperms & 0x1) == 0x1) && <span style={{ marginRight: 10, color: 'orange' }}>[M]</span>}
             <small style={{ color: 'purple' }}>[{moment.unix(dateCreated).fromNow()}]</small>
         </div>
     )

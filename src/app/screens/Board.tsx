@@ -22,19 +22,19 @@ const ThreadLink: React.FC<{
 }>
     = (({ url, threadID,
         posts, dateCreated, userperms, username, content, count }) => {
-        const viewMore = (posts && posts.length) > 0 ? count -  posts.length : 0  
+        const viewMore = (posts && posts.length) > 0 ? count - posts.length : 0
         return (
-            <Link to={{ 
-                    pathname: `${url}/t/${threadID}`, 
-                    state: {
-                        posts, 
-                        dateCreated, 
-                        userperms, 
-                        username, 
-                        content, 
-                        count
-                    }
-                }}>
+            <Link to={{
+                pathname: `${url}/t/${threadID}`,
+                state: {
+                    posts,
+                    dateCreated,
+                    userperms,
+                    username,
+                    content,
+                    count
+                }
+            }}>
                 <div className="pb-1">
                     <div className="px-2 py-0">
                         <ThreadPost
@@ -76,21 +76,32 @@ class BoardView extends React.Component<RouteComponentProps<{}> & { boardID: str
     state = {
         page: Array<any>()
     }
-    render(): React.ReactNode {
+    renderPreview = () => {
+        return (
+            <div>
+                404 no posts found
+            </div>
+        )
+    }
+    renderThreads = () => {
         const { page } = this.state;
         const { match } = this.props;
+        return page.map((e) => <ThreadLink
+            url={match.url}
+            threadID={e.UUID}
+            dateCreated={e.DateCreated}
+            userperms={0}
+            username={e.User.Name}
+            content={e.Content}
+            count={e.Count}
+            posts={e.Posts || []} />)
+    }
+    render(): React.ReactNode {
+        const { page } = this.state;
         return (
-            <div className="board _box">
+            <div className="board _box h-100">
                 <div>
-                    {page.map((e) => <ThreadLink
-                        url={match.url}
-                        threadID={e.UUID}
-                        dateCreated={e.DateCreated}
-                        userperms={0}
-                        username={e.User.Name}
-                        content={e.Content}
-                        count={e.Count}
-                        posts={e.Posts || []} />)}
+                    {(page.length > 0) ? this.renderThreads() : this.renderPreview() }
                 </div>
             </div>
         )
@@ -99,10 +110,12 @@ class BoardView extends React.Component<RouteComponentProps<{}> & { boardID: str
 
 const BoardHeader: React.FC<{ boardID: string, url: string }> = ({ boardID, url }) => {
     return (
-        <nav className="navbar" style={{ borderBottom: "2px solid white"}}>
-            <a className="" href="#">/b/{boardID}</a>
+        <nav className="navbar" style={{ borderBottom: "2px solid white" }}>
+            <Link to={`/b/${boardID}`}>
+                /b/{boardID}
+            </Link>
             <Link to={`${url}/create`}>
-                <button className="btn btn-dark">Create thread</button>
+                <button className="btn btn-primary">Create thread</button>
             </Link>
         </nav>
     )

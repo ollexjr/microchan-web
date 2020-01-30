@@ -38,7 +38,7 @@ class NavBoards extends React.Component {
       <div className="p-3" style={{ borderBottom: "2px dashed white" }}>
         {page.map((e) =>
           <Link to={`/b/${e.Name}`}>
-            <span>{e.Name} | </span>
+            <span>{e.Name} / </span>
           </Link>)}
       </div>
     )
@@ -49,6 +49,13 @@ const About = () => {
   return (
     <div>
       <p>microchan!</p>
+      <p>A very fast™ chan server written in Go</p>
+      <p>This frontend is made with React.JS</p>
+      <p>Find me on https://github.com/ollexjr/microchan</p>
+      <p>And on https://github.com/ollexjr/microchan-web</p>
+
+      <br/>
+      <p>font-family: 'Press Start 2P' (google.fonts)</p>
     </div>
   )
 }
@@ -69,7 +76,7 @@ const Nav = () => {
 
 const AppRouter: React.FC = () => {
   return (
-    <div className="d-flex flex-grow-1 _h-100 flex-column container box">
+    <div className="d-flex flex-grow-1 flex-column container box" style={{ minHeight: '100%', width: '800px'  }}>
       <Router>
         <Nav />
         <Switch>
@@ -85,7 +92,8 @@ const AppRouter: React.FC = () => {
           <Link to="/about">
             About
           </Link>
-          <span>2020</span>
+          <small>{Date().toString()}</small>
+          <span>React.js</span>
         </nav>
       </Router>
     </div>

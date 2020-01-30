@@ -16,10 +16,11 @@ class ThreadCreate extends React.Component<RouteComponentProps<{}> & { boardID: 
         if (title.length < 1) {
             return
         }
-        request({ 
-            method: 'POST', endpoint: '/boards/threads', 
-            expects: [200], format: 'object', 
-            args: { boardID: boardID }, json: { title } })
+        request({
+            method: 'POST', endpoint: '/boards/threads',
+            expects: [200], format: 'object',
+            args: { boardID: boardID }, json: { title }
+        })
             .then(({ status, object }) => {
                 this.setState({ status: status })
                 this.props.history.replace(`t/${object.UUID}`)
@@ -28,18 +29,17 @@ class ThreadCreate extends React.Component<RouteComponentProps<{}> & { boardID: 
             })
     }
     render() {
+        const { title } = this.state;
         return (
             <div>
                 <p>Create thread</p>
                 <div className="input-group mb-3">
-                    <form onSubmit={this.handleSubmit}>
-                        <input
-                            type="text" className="form-control"
-                            placeholder="Title" aria-label="Title"
-                            aria-describedby="basic-addon1"
-                            onChange={(event) => this.setState({ title: event.target.value })}
-                        />
-                        <input type="submit" className="btn btn-primary" value="Create" />
+                    <form id="input" className="form-inline flex-grow-1" onSubmit={this.handleSubmit}>
+                        <textarea className="form-control flex-grow-1 mr-sm-2"
+                            value={title}
+                            placeholder="Comment..." aria-label="Comment"
+                            onChange={(event) => this.setState({ title: event.target.value })}/>
+                        <button className="btn btn-outline-success my-2 my-sm-0" type="submit">Post</button>
                     </form>
                 </div>
             </div>
